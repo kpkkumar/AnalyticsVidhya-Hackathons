@@ -93,3 +93,6 @@ train.Loan_Status = train.Loan_Status.replace("Y" , "1")
 train.Loan_Status = train.Loan_Status.replace("N" , "0")
 
 sns.countplot(train.Loan_Status)
+
+xtrain = train.drop('Loan_Status', axis = 1)
+ytrain = train.Loan_Status
