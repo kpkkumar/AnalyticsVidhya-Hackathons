@@ -61,8 +61,35 @@ sns.countplot(x=traindata.Education)
 sns.countplot(x=traindata.Self_Employed)
 sns.countplot(x=traindata.Credit_History)
 sns.countplot(x=traindata.Property_Area)
+sns.countplot(x=traindata.Loan_Status)
+
+
+from sklearn.utils import resample
+major = traindata[traindata.Loan_Status == 'Y']
+minor = traindata[traindata.Loan_Status == 'N']
+
+minor_upsample = resample(minor, replace = True, n_samples = 422, random_state = 100)
+train = pd.concat([major,minor_upsample])
+
+sns.countplot(train.Loan_Status)
+train.dtypes
+
+from sklearn.preprocessing import LabelEncoder
+en = LabelEncoder()
+train['Gender'] = en.fit_transform(train['Gender'])
+train['Married'] = en.fit_transform(train['Married'])
+train['Dependents'] = en.fit_transform(train['Dependents'])
+train['Education'] = en.fit_transform(train['Education'])
+train['Self_Employed'] = en.fit_transform(train['Self_Employed'])
+train['Property_Area'] = en.fit_transform(train['Property_Area'])
 
 sns.boxplot(traindata.LoanAmount)
 sns.boxplot(traindata.Loan_Amount_Term)
 sns.boxplot(traindata.ApplicantIncome)
 sns.boxplot(traindata.CoapplicantIncome)
+
+train.Loan_Status = train.Loan_Status.replace("Y" , "1")
+
+train.Loan_Status = train.Loan_Status.replace("N" , "0")
+
+sns.countplot(train.Loan_Status)
