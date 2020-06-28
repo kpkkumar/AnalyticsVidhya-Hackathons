@@ -40,3 +40,29 @@ traindata["Loan_Amount_Term"].describe()
 
 traindata["Loan_Amount_Term"].fillna(traindata.Loan_Amount_Term.mean(), inplace=True)
 traindata = traindata.astype({"Loan_Amount_Term" : "int64"})
+
+traindata["Credit_History"].describe()
+traindata["Credit_History"] = traindata["Credit_History"].fillna(1)
+
+correlation = traindata.corr()
+
+plot = sns.pairplot(traindata)
+traindata = traindata.astype({"Married" : "category"})
+traindata = traindata.astype({"Gender" : "category"})
+traindata = traindata.astype({"Education" : "category"})
+traindata = traindata.astype({"Self_Employed" : "category"})
+traindata = traindata.astype({"Property_Area" : "category"})
+traindata = traindata.astype({"Loan_Status" : "category"})
+
+sns.countplot(x=traindata.Gender)
+sns.countplot(x=traindata.Married)
+sns.countplot(x=traindata.Dependents)
+sns.countplot(x=traindata.Education)
+sns.countplot(x=traindata.Self_Employed)
+sns.countplot(x=traindata.Credit_History)
+sns.countplot(x=traindata.Property_Area)
+
+sns.boxplot(traindata.LoanAmount)
+sns.boxplot(traindata.Loan_Amount_Term)
+sns.boxplot(traindata.ApplicantIncome)
+sns.boxplot(traindata.CoapplicantIncome)
