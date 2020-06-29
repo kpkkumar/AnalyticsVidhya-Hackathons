@@ -96,3 +96,53 @@ sns.countplot(train.Loan_Status)
 
 xtrain = train.drop('Loan_Status', axis = 1)
 ytrain = train.Loan_Status
+xtrain = xtrain.drop('Loan_ID', axis=1)
+
+test=pd.read_csv("D:\Studies\Books\Data Science\Python Projects\Analytics Vidhya\Loan Prediction\Dataset\TestData.csv")
+test.dtypes
+test.isnull().sum()
+
+test["Gender"].describe()
+test["Gender"] = test["Gender"].fillna("Male")
+test["Married"].describe()
+test["Married"] = test["Married"].fillna("Yes")
+test["Self_Employed"].describe()
+test["Self_Employed"] = test["Self_Employed"].fillna("No")
+test["Dependents"].describe()
+test["Dependents"] = test["Dependents"].fillna("0")
+
+test["LoanAmount"].describe()
+
+test["LoanAmount"].fillna(traindata.LoanAmount.mean(), inplace=True)
+test["Loan_Amount_Term"].describe()
+
+test["Loan_Amount_Term"].fillna(traindata.Loan_Amount_Term.mean(), inplace=True)
+test = test.astype({"Loan_Amount_Term" : "int64"})
+
+test["Credit_History"].describe()
+test["Credit_History"] = test["Credit_History"].fillna(1)
+
+test = test.astype({"Married" : "category"})
+test = test.astype({"Gender" : "category"})
+test = test.astype({"Education" : "category"})
+test = test.astype({"Self_Employed" : "category"})
+test = test.astype({"Property_Area" : "category"})
+
+from sklearn.preprocessing import LabelEncoder
+en = LabelEncoder()
+test['Gender'] = en.fit_transform(test['Gender'])
+test['Married'] = en.fit_transform(test['Married'])
+test['Dependents'] = en.fit_transform(test['Dependents'])
+test['Education'] = en.fit_transform(test['Education'])
+test['Self_Employed'] = en.fit_transform(test['Self_Employed'])
+test['Property_Area'] = en.fit_transform(test['Property_Area'])
+
+test = test.drop('Loan_ID', axis=1)
+
+from sklearn.ensemble import RandomForestRegressor
+ranfor = RandomForestRegressor(n_estimators = 1300, random_state = 100)
+ranfor.fit(xtrain,ytrain)
+
+prediction = ranfor.predict(test)
+prediction = pd.DataFrame(prediction)
+prediction.to_csv(r'D:\\Studies\\Books\\Data Science\\Python Projects\\Analytics Vidhya\\Loan Prediction\\Dataset\\submission.csv')
