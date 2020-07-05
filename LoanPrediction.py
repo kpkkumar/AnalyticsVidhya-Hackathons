@@ -65,15 +65,15 @@ sns.countplot(x=traindata.Loan_Status)
 
 
 
-pd.crosstab(traindata.Gender, traindata.Loan_Status).plot(kind='bar')
+pd.crosstab(traindata.Gender, traindata.Loan_Status)
 
 table= pd.crosstab(traindata.Gender, traindata.Loan_Status)
 table.div(table.sum(1).astype(float), axis = 0).plot(kind='bar', stacked = 'True')
 
-table= pd.crosstab(traindata.Married, traindata.Loan_Status).plot(kind='bar')
+table= pd.crosstab(traindata.Married, traindata.Loan_Status)
 table.div(table.sum(1).astype(float),axis=0).plot(kind='bar', stacked ='True')
 
-table= pd.crosstab(traindata.Dependents, traindata.Loan_Status).plot(kind='bar')
+table= pd.crosstab(traindata.Dependents, traindata.Loan_Status)
 table.div(table.sum(1).astype(float),axis=0).plot(kind='bar',stacked='True')
 
 table=pd.crosstab(traindata.Education, traindata.Loan_Status)
@@ -82,7 +82,7 @@ table.div(table.sum(1).astype(float),axis=0).plot(kind='bar',stacked='True')
 table=pd.crosstab(traindata.Self_Employed, traindata.Loan_Status)
 table.div(table.sum(1).astype(float),axis=0).plot(kind='bar',stacked='True')
 
-table=pd.crosstab(traindata.Credit_History, traindata.Loan_Status).plot(kind='bar')
+table=pd.crosstab(traindata.Credit_History, traindata.Loan_Status)
 table.div(table.sum(1).astype(float),axis=0).plot(kind='bar',stacked='True')
 
 table=pd.crosstab(traindata.Property_Area, traindata.Loan_Status)
@@ -91,7 +91,19 @@ table.div(table.sum(1).astype(float),axis=0).plot(kind='bar',stacked='True')
 
 traindata=traindata.drop(['Loan_ID','Gender','Self_Employed'], axis=1)
 
+sns.boxplot(traindata.CoapplicantIncome)
+traindata['CoapplicantIncome'].describe()
+traindata = traindata[(traindata.CoapplicantIncome <= 5500)]
 
+sns.boxplot(traindata.ApplicantIncome)
+traindata['ApplicantIncome'].describe()
+traindata = traindata[(traindata.ApplicantIncome <=8500)]
+
+sns.boxplot(traindata.Loan_Amount_Term)
+traindata['Loan_Amount_Term'].describe()
+
+sns.boxplot(traindata.LoanAmount)
+traindata['LoanAmount'].describe()
 
 from sklearn.utils import resample
 major = traindata[traindata.Loan_Status == 'Y']
@@ -110,10 +122,6 @@ train['Dependents'] = en.fit_transform(train['Dependents'])
 train['Education'] = en.fit_transform(train['Education'])
 train['Property_Area']=en.fit_transform(train['Property_Area'])
 
-sns.boxplot(traindata.LoanAmount)
-sns.boxplot(traindata.Loan_Amount_Term)
-sns.boxplot(traindata.ApplicantIncome)
-sns.boxplot(traindata.CoapplicantIncome)
 
 train.Loan_Status = train.Loan_Status.replace("Y" , "1")
 
