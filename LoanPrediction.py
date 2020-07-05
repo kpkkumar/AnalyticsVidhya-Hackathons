@@ -18,7 +18,7 @@ traindata = traindata.astype({"Credit_History" : "category"})
 traindata["ApplicantIncome"].describe()
 traindata = traindata.astype({"ApplicantIncome" : "int64"})
 traindata = traindata.astype({"CoapplicantIncome" : "int64"})
-traindata = traindata.astype({"LoanAmount" : "int64"})
+
 
 traindata["Dependents"].describe()
 
@@ -40,7 +40,7 @@ traindata["Loan_Amount_Term"].describe()
 
 traindata["Loan_Amount_Term"].fillna(traindata.Loan_Amount_Term.mean(), inplace=True)
 traindata = traindata.astype({"Loan_Amount_Term" : "int64"})
-
+traindata = traindata.astype({"LoanAmount" : "int64"})
 traindata["Credit_History"].describe()
 traindata["Credit_History"] = traindata["Credit_History"].fillna(1)
 
@@ -64,6 +64,35 @@ sns.countplot(x=traindata.Property_Area)
 sns.countplot(x=traindata.Loan_Status)
 
 
+
+pd.crosstab(traindata.Gender, traindata.Loan_Status).plot(kind='bar')
+
+table= pd.crosstab(traindata.Gender, traindata.Loan_Status)
+table.div(table.sum(1).astype(float), axis = 0).plot(kind='bar', stacked = 'True')
+
+table= pd.crosstab(traindata.Married, traindata.Loan_Status).plot(kind='bar')
+table.div(table.sum(1).astype(float),axis=0).plot(kind='bar', stacked ='True')
+
+table= pd.crosstab(traindata.Dependents, traindata.Loan_Status).plot(kind='bar')
+table.div(table.sum(1).astype(float),axis=0).plot(kind='bar',stacked='True')
+
+table=pd.crosstab(traindata.Education, traindata.Loan_Status)
+table.div(table.sum(1).astype(float),axis=0).plot(kind='bar',stacked='True')
+
+table=pd.crosstab(traindata.Self_Employed, traindata.Loan_Status)
+table.div(table.sum(1).astype(float),axis=0).plot(kind='bar',stacked='True')
+
+table=pd.crosstab(traindata.Credit_History, traindata.Loan_Status).plot(kind='bar')
+table.div(table.sum(1).astype(float),axis=0).plot(kind='bar',stacked='True')
+
+table=pd.crosstab(traindata.Property_Area, traindata.Loan_Status)
+table.div(table.sum(1).astype(float),axis=0).plot(kind='bar',stacked='True')
+
+
+traindata=traindata.drop(['Loan_ID','Gender','Self_Employed'], axis=1)
+
+
+
 from sklearn.utils import resample
 major = traindata[traindata.Loan_Status == 'Y']
 minor = traindata[traindata.Loan_Status == 'N']
@@ -76,12 +105,10 @@ train.dtypes
 
 from sklearn.preprocessing import LabelEncoder
 en = LabelEncoder()
-train['Gender'] = en.fit_transform(train['Gender'])
 train['Married'] = en.fit_transform(train['Married'])
 train['Dependents'] = en.fit_transform(train['Dependents'])
 train['Education'] = en.fit_transform(train['Education'])
-train['Self_Employed'] = en.fit_transform(train['Self_Employed'])
-train['Property_Area'] = en.fit_transform(train['Property_Area'])
+train['Property_Area']=en.fit_transform(train['Property_Area'])
 
 sns.boxplot(traindata.LoanAmount)
 sns.boxplot(traindata.Loan_Amount_Term)
@@ -96,7 +123,9 @@ sns.countplot(train.Loan_Status)
 
 xtrain = train.drop('Loan_Status', axis = 1)
 ytrain = train.Loan_Status
-xtrain = xtrain.drop('Loan_ID', axis=1)
+
+
+
 
 test=pd.read_csv("D:\Studies\Books\Data Science\Python Projects\Analytics Vidhya\Loan Prediction\Dataset\TestData.csv")
 test.dtypes
@@ -128,21 +157,28 @@ test = test.astype({"Education" : "category"})
 test = test.astype({"Self_Employed" : "category"})
 test = test.astype({"Property_Area" : "category"})
 
+test=test.drop(['Loan_ID','Gender','Self_Employed'], axis=1)
+
+
 from sklearn.preprocessing import LabelEncoder
 en = LabelEncoder()
-test['Gender'] = en.fit_transform(test['Gender'])
 test['Married'] = en.fit_transform(test['Married'])
 test['Dependents'] = en.fit_transform(test['Dependents'])
 test['Education'] = en.fit_transform(test['Education'])
-test['Self_Employed'] = en.fit_transform(test['Self_Employed'])
 test['Property_Area'] = en.fit_transform(test['Property_Area'])
 
-test = test.drop('Loan_ID', axis=1)
 
-from sklearn.ensemble import RandomForestRegressor
-ranfor = RandomForestRegressor(n_estimators = 1300, random_state = 100)
-ranfor.fit(xtrain,ytrain)
 
-prediction = ranfor.predict(test)
+'''from sklearn.ensemble import RandomForestRegressor
+ranfor = RandomForestRegressor(n_estimators = 1000, random_state = 100)
+ranfor.fit(xtrain,ytrain)'''
+
+from sklearn.linear_model import LogisticRegression
+from sklearn import metrics
+logreg = LogisticRegression()
+logreg.fit(xtrain, ytrain)
+
+prediction = logreg.predict(test)
 prediction = pd.DataFrame(prediction)
+
 prediction.to_csv(r'D:\\Studies\\Books\\Data Science\\Python Projects\\Analytics Vidhya\\Loan Prediction\\Dataset\\submission.csv')
