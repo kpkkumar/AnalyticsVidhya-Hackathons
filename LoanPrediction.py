@@ -91,10 +91,6 @@ table.div(table.sum(1).astype(float),axis=0).plot(kind='bar',stacked='True')
 
 traindata=traindata.drop(['Loan_ID','Gender','Self_Employed'], axis=1)
 
-sns.boxplot(traindata.CoapplicantIncome)
-traindata['CoapplicantIncome'].describe()
-traindata = traindata[(traindata.CoapplicantIncome <= 5500)]
-
 sns.boxplot(traindata.ApplicantIncome)
 traindata['ApplicantIncome'].describe()
 traindata = traindata[(traindata.ApplicantIncome <=8500)]
@@ -109,7 +105,7 @@ from sklearn.utils import resample
 major = traindata[traindata.Loan_Status == 'Y']
 minor = traindata[traindata.Loan_Status == 'N']
 
-minor_upsample = resample(minor, replace = True, n_samples = 422, random_state = 100)
+minor_upsample = resample(minor, replace = True,n_samples=343,  random_state = 100)
 train = pd.concat([major,minor_upsample])
 
 sns.countplot(train.Loan_Status)
@@ -129,7 +125,8 @@ train.Loan_Status = train.Loan_Status.replace("N" , "0")
 
 sns.countplot(train.Loan_Status)
 
-xtrain = train.drop('Loan_Status', axis = 1)
+xtrain = train
+xtrain = train.drop(['Loan_Status','CoapplicantIncome'], axis = 1)
 ytrain = train.Loan_Status
 
 
@@ -165,7 +162,7 @@ test = test.astype({"Education" : "category"})
 test = test.astype({"Self_Employed" : "category"})
 test = test.astype({"Property_Area" : "category"})
 
-test=test.drop(['Loan_ID','Gender','Self_Employed'], axis=1)
+test=test.drop(['Loan_ID','Gender','Self_Employed','CoapplicantIncome'], axis=1)
 
 
 from sklearn.preprocessing import LabelEncoder
